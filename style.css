@@ -1,0 +1,777 @@
+/* --- RESET & COLOR PALETTE --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg-blue: #87ceeb;
+  --sky-blue: #00bfff;
+  --card-pink: #ffb6c1;
+  --hot-pink: #ff69b4;
+  --gold: #ffd700;
+  --deep-blue: #1e3a8a;
+  --white: #ffffff;
+}
+
+body {
+  font-family: "Quicksand", "Short Stack", cursive, sans-serif;
+  background-color: var(--bg-blue);
+  color: #333;
+  overflow-x: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+
+/* --- MOUSE & TOUCH SPARKLES --- */
+.cursor-sparkle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 18px;
+  animation: sparkle-float 0.8s forwards ease-out;
+  z-index: 9999;
+}
+
+@keyframes sparkle-float {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px var(--gold));
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.click-burst {
+  position: fixed;
+  pointer-events: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: burst-out 0.6s ease-out forwards;
+  z-index: 9998;
+}
+
+@keyframes burst-out {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: translate(var(--bx), var(--by)) scale(0.1); opacity: 0; }
+}
+
+/* --- AUDIO CONTROLLER WIDGET --- */
+.audio-control-bar {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 10px 18px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  border: 3px solid var(--gold);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.audio-control-bar:hover {
+  transform: scale(1.08) translateY(-2px);
+}
+
+.icon-btn {
+  background: var(--card-pink);
+  border: 2px solid var(--deep-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+  transform: rotate(20deg) scale(1.15);
+  background: var(--gold);
+}
+
+#current-track-label {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--deep-blue);
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- PAGE SECTIONS --- */
+.page-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-section.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
+  transform: scale(0.95) translateY(20px);
+}
+
+/* --- SECTION 1: HERO LANDING --- */
+#hero-section {
+  background: radial-gradient(circle at center, #b0e0e6 0%, #87ceeb 100%);
+}
+
+.stars-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  font-size: clamp(22px, 4vw, 34px);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.3s;
+  animation: float-around 4s infinite ease-in-out alternate;
+}
+
+.sparkle:hover {
+  transform: scale(1.8) rotate(25deg);
+  filter: drop-shadow(0 0 12px var(--gold));
+}
+
+@keyframes float-around {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(10deg); }
+  100% { transform: translateY(10px) rotate(-10deg); }
+}
+
+.cake-container {
+  margin-bottom: 25px;
+  perspective: 1000px;
+}
+
+.cake-illustration {
+  width: clamp(130px, 25vw, 170px);
+  height: clamp(130px, 25vw, 170px);
+  background: var(--card-pink);
+  border: 5px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18), 0 0 20px rgba(255, 215, 0, 0.4);
+  transition: transform 0.5s ease;
+  cursor: pointer;
+}
+
+.cake-illustration:hover {
+  transform: rotateY(15deg) rotateX(10deg) scale(1.1);
+}
+
+.cake-img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.cake-illustration:hover .cake-img {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.candle {
+  position: absolute;
+  top: -28px;
+  width: 14px;
+  height: 38px;
+  background: linear-gradient(to bottom, var(--gold), #ffa500);
+  border-radius: 4px;
+  border: 1px solid #cc8400;
+}
+
+.flame {
+  position: absolute;
+  top: -20px;
+  left: -4px;
+  width: 22px;
+  height: 22px;
+  background: #ff4500;
+  border-radius: 50% 50% 20% 20%;
+  box-shadow: 0 0 15px #ff4500, 0 0 25px var(--gold);
+  animation: flame-flicker 0.4s infinite alternate ease-in-out;
+}
+
+@keyframes flame-flicker {
+  0% { transform: scale(1) rotate(-2deg); background: #ff4500; }
+  100% { transform: scale(1.25) rotate(3deg); background: var(--gold); }
+}
+
+.main-title {
+  font-family: "Fredoka One", cursive;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  color: var(--deep-blue);
+  text-shadow: 3px 3px 0px var(--white), 6px 6px 0px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.name-hanane span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  animation: letter-bounce 2s infinite alternate ease-in-out;
+}
+
+.name-hanane span:hover {
+  transform: translateY(-18px) scale(1.4) rotate(15deg) !important;
+}
+
+.letter-h1 { color: var(--gold); animation-delay: 0.1s; }
+.letter-a1 { color: var(--card-pink); animation-delay: 0.2s; }
+.letter-n1 { color: var(--hot-pink); animation-delay: 0.3s; }
+.letter-a2 { color: #00fa9a; animation-delay: 0.4s; }
+.letter-n2 { color: var(--sky-blue); animation-delay: 0.5s; }
+.letter-e { color: #dda0dd; animation-delay: 0.6s; }
+
+@keyframes letter-bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+.adventure-btn {
+  background: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+  color: var(--white);
+  border: 4px solid var(--gold);
+  padding: 16px 38px;
+  font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+  font-family: "Fredoka One", cursive;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0, 191, 255, 0.4), 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.adventure-btn:hover {
+  transform: translateY(-5px) scale(1.08);
+  box-shadow: 0 15px 35px rgba(0,191,255,0.6), 0 0 25px var(--gold);
+}
+
+.adventure-btn:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+/* --- SECTION 2: MAP PATH --- */
+#map-section {
+  background: #7ec0ee;
+}
+
+.map-header {
+  font-family: "Fredoka One", cursive;
+  color: var(--deep-blue);
+  margin-bottom: 20px;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  text-shadow: 2px 2px var(--white);
+  text-align: center;
+  animation: pulse-text 2s infinite alternate;
+}
+
+@keyframes pulse-text {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.03); }
+}
+
+.map-container {
+  position: relative;
+  width: min(92vw, 880px);
+  height: clamp(340px, 50vh, 450px);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  border: 4px dashed var(--gold);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.path-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.map-dashed-line {
+  fill: none;
+  stroke: var(--deep-blue);
+  stroke-width: 5;
+  stroke-dasharray: 10 10;
+  animation: dash-move 20s linear infinite;
+}
+
+@keyframes dash-move {
+  to { stroke-dashoffset: -1000; }
+}
+
+.checkpoint-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
+}
+
+.node-card {
+  background: linear-gradient(135deg, var(--card-pink) 0%, var(--hot-pink) 100%);
+  border: 3px solid var(--deep-blue);
+  color: var(--white);
+  padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 22px);
+  font-family: "Fredoka One", cursive;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.node-card:hover {
+  transform: translateY(-8px) scale(1.15) rotate(-3deg);
+  box-shadow: 0 12px 25px rgba(255, 105, 180, 0.5), 0 0 20px var(--gold);
+}
+
+.checkpoint-node.locked .node-card {
+  background: #bbb;
+  border-color: #777;
+  color: #666;
+  cursor: not-allowed;
+  transform: scale(0.85);
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.checkpoint-node.unlocked .node-card {
+  animation: bounce-card 1.2s infinite alternate cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+@keyframes bounce-card {
+  0% { transform: translateY(0) scale(1); box-shadow: 0 0 10px var(--gold); }
+  100% { transform: translateY(-10px) scale(1.08); box-shadow: 0 0 25px var(--gold), 0 10px 20px rgba(0,0,0,0.2); }
+}
+
+.progress-bar-container {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-weight: bold;
+  color: var(--deep-blue);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 12px 28px;
+  border-radius: 30px;
+  border: 2px solid var(--gold);
+}
+
+.vault-unlock-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, #ffa500 100%);
+  border: 3px solid var(--deep-blue);
+  color: var(--deep-blue);
+  padding: 10px 22px;
+  font-family: "Fredoka One", cursive;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.vault-unlock-btn:not(:disabled):hover {
+  transform: scale(1.1) rotate(2deg);
+  box-shadow: 0 0 20px var(--gold);
+}
+
+.vault-unlock-btn:disabled {
+  background: #ccc;
+  border-color: #999;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* --- NOTEBOOK MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 15px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.notebook-card {
+  width: min(90vw, 520px);
+  background: var(--card-pink);
+  border: 5px solid var(--deep-blue);
+  border-radius: 20px;
+  padding: 22px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.7) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.ring-holes {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 14px;
+}
+
+.ring-holes span {
+  width: 14px;
+  height: 14px;
+  background: var(--deep-blue);
+  border-radius: 50%;
+  box-shadow: inset 0 3px 5px rgba(0,0,0,0.5);
+}
+
+.notebook-body {
+  background: var(--white);
+  border: 3px solid var(--deep-blue);
+  border-radius: 12px;
+  padding: 22px 18px 22px 45px;
+  position: relative;
+  min-height: 220px;
+  background-image: linear-gradient(#b0e0e6 1px, transparent 1px);
+  background-size: 100% 30px;
+}
+
+.red-margin {
+  position: absolute;
+  top: 0;
+  left: 35px;
+  width: 3px;
+  height: 100%;
+  background: #ff4d4d;
+}
+
+.notebook-content h3 {
+  font-family: "Fredoka One", cursive;
+  color: var(--deep-blue);
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+
+.notebook-content p {
+  font-size: clamp(1rem, 3vw, 1.15rem);
+  line-height: 30px;
+  color: #222;
+}
+
+.highlight-letter {
+  background: var(--gold);
+  padding: 2px 8px;
+  font-weight: bold;
+  border-radius: 6px;
+  color: var(--deep-blue);
+  display: inline-block;
+  box-shadow: 0 0 10px var(--gold);
+  animation: pulse-glow-letter 1s infinite alternate;
+}
+
+@keyframes pulse-glow-letter {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2) rotate(5deg); }
+}
+
+.close-card-btn {
+  margin-top: 18px;
+  background: var(--deep-blue);
+  color: var(--white);
+  border: none;
+  padding: 12px 28px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s;
+}
+
+.close-card-btn:hover {
+  background: var(--hot-pink);
+  transform: scale(1.1);
+}
+
+/* --- SECTION 3: VAULT SCREEN --- */
+#vault-section {
+  background: radial-gradient(circle, #2a2a6e 0%, #111133 100%);
+}
+
+.vault-pink-card {
+  width: min(90vw, 480px);
+  background: var(--card-pink);
+  border: 5px solid var(--gold);
+  border-radius: 25px;
+  padding: 35px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 30px rgba(255,215,0,0.3);
+  transition: transform 0.3s;
+}
+
+.vault-pink-card:hover {
+  transform: scale(1.02);
+}
+
+.vault-instructions {
+  font-family: "Fredoka One", cursive;
+  color: var(--deep-blue);
+  font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+  margin-bottom: 22px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#password-input {
+  padding: 14px;
+  font-size: 1.2rem;
+  border: 3px solid var(--deep-blue);
+  border-radius: 12px;
+  width: 220px;
+  outline: none;
+  text-align: center;
+  font-family: "Fredoka One", cursive;
+  letter-spacing: 2px;
+  transition: all 0.3s;
+}
+
+#password-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 15px var(--gold);
+}
+
+.unlock-action-btn {
+  background: var(--gold);
+  border: 3px solid var(--deep-blue);
+  padding: 12px 24px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.unlock-action-btn:hover {
+  transform: scale(1.1) rotate(3deg);
+  background: #ffa500;
+}
+
+.error-msg {
+  color: #ff3333;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.error-msg.hidden {
+  display: none !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* --- SECTION 4: FINAL AUDIO CARD --- */
+#audio-section {
+  background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%);
+}
+
+.audio-light-blue-card {
+  width: min(90vw, 520px);
+  background: var(--bg-blue);
+  border: 5px solid var(--gold);
+  border-radius: 30px;
+  padding: 35px;
+  text-align: center;
+  box-shadow: 0 0 45px rgba(255, 215, 0, 0.6);
+  animation: card-pulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes card-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 30px rgba(255,215,0,0.5); }
+  100% { transform: scale(1.02); box-shadow: 0 0 60px rgba(255,215,0,0.9); }
+}
+
+.audio-card-title {
+  font-family: "Fredoka One", cursive;
+  color: var(--deep-blue);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 25px;
+}
+
+.play-button-wrapper {
+  margin-bottom: 22px;
+}
+
+.big-play-btn {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, var(--sky-blue) 0%, #0080ff 100%);
+  border: 5px solid var(--deep-blue);
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px var(--sky-blue);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.big-play-btn:hover {
+  transform: scale(1.2) rotate(10deg);
+  background: var(--gold);
+  box-shadow: 0 15px 40px rgba(255,215,0,0.8);
+}
+
+.play-icon {
+  font-size: 42px;
+  color: var(--white);
+  margin-left: 5px;
+}
+
+.final-written-note {
+  background: var(--white);
+  border: 3px dashed var(--deep-blue);
+  padding: 18px;
+  border-radius: 16px;
+  margin: 20px 0;
+  font-size: 1.1rem;
+  color: var(--deep-blue);
+}
+
+.game-transition-btn {
+  background: linear-gradient(135deg, var(--card-pink) 0%, var(--hot-pink) 100%);
+  border: 3px solid var(--deep-blue);
+  padding: 14px 28px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.2rem;
+  border-radius: 25px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-transition-btn:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 10px 25px rgba(255,105,180,0.5);
+}
+
+/* --- SECTION 5: DINO MINI GAME --- */
+#dino-section {
+  background: #87ceeb;
+}
+
+.dino-game-wrapper {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 25px;
+  border-radius: 25px;
+  border: 4px solid var(--gold);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  width: min(95vw, 840px);
+}
+
+.game-header h2 {
+  font-family: "Fredoka One", cursive;
+  color: var(--deep-blue);
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  margin-bottom: 5px;
+}
+
+.score-board {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ff4500;
+  margin: 10px 0;
+}
+
+#dino-canvas {
+  background: linear-gradient(#b0e0e6, #87ceeb);
+  border: 4px solid var(--deep-blue);
+  border-radius: 12px;
+  display: block;
+  margin: 12px auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.restart-btn {
+  background: var(--card-pink);
+  border: 3px solid var(--deep-blue);
+  padding: 12px 25px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.restart-btn:hover {
+  transform: scale(1.1);
+  background: var(--gold);
+}
+
+.restart-btn.hidden {
+  display: none !important;
+}

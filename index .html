@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Happy Birthday Hanane! ✨</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Short+Stack&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Audio Background Player -->
+    <audio id="bg-audio" loop></audio>
+
+    <!-- Floating Audio Toggle Widget -->
+    <div class="audio-control-bar">
+        <button id="music-toggle-btn" class="icon-btn" title="Toggle Music">🎵</button>
+        <span id="current-track-label">Track: Falling Down</span>
+    </div>
+
+    <!-- SECTION 1: HERO LANDING SCREEN -->
+    <section id="hero-section" class="page-section">
+        <div class="stars-container">
+            <span class="sparkle star-yellow" style="top: 15%; left: 8%;">✦</span>
+            <span class="sparkle star-blue" style="top: 20%; left: 20%;">✨</span>
+            <span class="sparkle star-yellow" style="top: 25%; right: 12%;">✦</span>
+            <span class="sparkle heart-orange" style="top: 12%; right: 28%;">🧡</span>
+            <span class="sparkle heart-yellow" style="bottom: 20%; right: 10%;">💛</span>
+            <span class="sparkle heart-red" style="bottom: 10%; left: 18%;">❤️</span>
+            <span class="sparkle star-purple" style="bottom: 25%; left: 10%;">★</span>
+        </div>
+
+        <div class="hero-content">
+            <div class="cake-container">
+                <div class="cake-illustration">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <img src="cake.jpg" alt="Birthday Cake" class="cake-img" onerror="this.style.display='none';" />
+                </div>
+            </div>
+
+            <h1 class="main-title">
+                Happy Birthday 
+                <span class="name-hanane">
+                    <span class="letter-h1">H</span><span class="letter-a1">a</span><span class="letter-n1">n</span><span class="letter-a2">a</span><span class="letter-n2">n</span><span class="letter-e">e</span>
+                </span>
+            </h1>
+
+            <button id="start-btn" class="adventure-btn">start the adventure</button>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MAP PATH & CHECKPOINTS -->
+    <section id="map-section" class="page-section hidden">
+        <h2 class="map-header">Follow the path to collect All the letters! 🗺️</h2>
+        
+        <div class="map-container">
+            <svg class="path-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+                <path d="M 100 500 Q 250 100 400 500 T 700 100 T 900 500" class="map-dashed-line" />
+            </svg>
+
+            <div class="checkpoint-node" style="top: 80%; left: 10%;" data-msg="0">
+                <button class="node-card">Card #1</button>
+            </div>
+            <div class="checkpoint-node" style="top: 15%; left: 25%;" data-msg="1">
+                <button class="node-card">Card #2</button>
+            </div>
+            <div class="checkpoint-node" style="top: 80%; left: 42%;" data-msg="2">
+                <button class="node-card">Card #3</button>
+            </div>
+            <div class="checkpoint-node" style="top: 15%; left: 58%;" data-msg="3">
+                <button class="node-card">Card #4</button>
+            </div>
+            <div class="checkpoint-node" style="top: 80%; left: 75%;" data-msg="4">
+                <button class="node-card">Card #5</button>
+            </div>
+            <div class="checkpoint-node" style="top: 15%; left: 90%;" data-msg="5">
+                <button class="node-card">Card #6</button>
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <span>Messages Opened: <strong id="opened-count">0</strong> / 6</span>
+            <button id="to-vault-btn" class="vault-unlock-btn" disabled>Go to Vault 🔐</button>
+        </div>
+    </section>
+
+    <!-- NOTEBOOK MODAL POPUP -->
+    <div id="notebook-modal" class="modal-overlay hidden">
+        <div class="notebook-card">
+            <div class="ring-holes">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+        
+            <div class="notebook-body">
+                <div class="red-margin"></div>
+                <div class="notebook-content">
+                    <h3 id="modal-title">Message Title</h3>
+                    <p id="modal-text">Message content goes here...</p>
+                </div>
+            </div>
+
+            <button id="close-modal-btn" class="close-card-btn">Close Card</button>
+        </div>
+    </div>
+
+    <!-- SECTION 3: PASSWORD VAULT -->
+    <section id="vault-section" class="page-section hidden">
+        <div class="sparkles-bg">
+            <span class="big-star" style="top: 10%; left: 10%;">✨</span>
+            <span class="big-star" style="top: 15%; right: 15%;">✦</span>
+            <span class="big-star" style="bottom: 20%; left: 12%;">✦</span>
+            <span class="big-star" style="bottom: 10%; right: 10%;">✨</span>
+        </div>
+
+        <div class="vault-card-wrapper">
+            <div class="vault-pink-card">
+                <p class="vault-instructions">Combine the highlighted letters from your notes to unlock the secret message!</p>
+                
+                <div class="input-group">
+                    <input type="text" id="password-input" placeholder="Enter Secret Passphrase..." autocomplete="off" />
+                    <button id="unlock-btn" class="unlock-action-btn">Unlock 🔓</button>
+                </div>
+
+                <p id="vault-error-msg" class="error-msg hidden">Incorrect passphrase! Check your notes again.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: FINAL AUDIO MESSAGE -->
+<section id="audio-section" class="page-section hidden">
+    <div class="audio-card-container">
+        <div class="audio-light-blue-card">
+            <h2 class="audio-card-title">Happy Birthday! 🎧</h2>
+            
+            <div class="play-button-wrapper">
+                <button id="play-final-audio-btn" class="big-play-btn">
+                    <span class="play-icon">▶</span>
+                </button>
+            </div>
+
+            <!-- Your actual voice message audio file -->
+            <audio id="final-voice-note" src="final_voice_message.mp3"></audio>
+
+            <div class="final-written-note">
+                <p id="final-note-text">"You unlocked it! Click play to listen to the final birthday message!"</p>
+            </div>
+
+            <button id="goto-dino-btn" class="game-transition-btn">Play Mini Game 🦖</button>
+        </div>
+    </div>
+</section>
+
+    <!-- SECTION 5: DINO MINI GAME -->
+    <section id="dino-section" class="page-section hidden">
+        <div class="dino-game-wrapper">
+            <div class="game-header">
+                <h2>I ran out of ideas... so here! Mini Game! 🦖🎮</h2>
+                <p>Press Space or Tap Screen to Jump!</p>
+                <div class="score-board">Score: <span id="game-score">0</span></div>
+            </div>
+
+            <canvas id="dino-canvas" width="800" height="300"></canvas>
+
+            <button id="restart-game-btn" class="restart-btn hidden">Play Again</button>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
